@@ -1,0 +1,23 @@
+behaviour
+	better hammer swinging; shouldn't loop, and remove first frame, probably.
+	collision detection (add recoil behaviour and sprite frames?)
+	update scrolling 
+		instead of movement shown by background scrolling, have her travel across the screen, and then scroll background when she gets near the edge
+	have platforms that she can jump on	
+	running doesn't stop on landing
+
+updated art assets(everything!)
+	character design work for bad guys, etc.
+	UI desgin work; not sure I'm feeling the example stuff
+	sprite sheet
+	splash screen
+	background (be conscious of platform placement, etc.)
+	
+right now no sound is incorporated in the game, so this represents major work to be done
+
+back end stuff, like high score keeping and other metrics to impress future employers
+
+start thinking of code repository considerations (public/private, etc)
+
+don't worry about actually web hosting until a long time from now
+	
