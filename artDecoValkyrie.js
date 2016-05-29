@@ -63,6 +63,8 @@ var SnailBait = function () {
    this.windowHasFocus = true;
    this.countdownInProgress = false;
    this.gameStarted = false;
+	
+	this.keyMap ={37: false, 39: false, 68: false, 74: false, 75: false, 80: false, 83: false}; //keep track of what keys are pressed
 
    // Images............................................................
    
@@ -885,7 +887,9 @@ SnailBait.prototype = {
 		else
 			this.bgVelocity = -this.BACKGROUND_VELOCITY;
       this.runner.runAnimationRate = this.RUN_ANIMATION_RATE;
-      this.runner.artist.cells = this.valkRunLeftCells;
+		if(! this.runner.jumping){
+			this.runner.artist.cells = this.valkRunLeftCells;
+		}  
    },
 
    turnRight: function () {
@@ -894,7 +898,9 @@ SnailBait.prototype = {
 		else
 			this.bgVelocity = this.BACKGROUND_VELOCITY;
       this.runner.runAnimationRate = this.RUN_ANIMATION_RATE;
-      this.runner.artist.cells = this.valkRunRightCells;
+		if(! this.runner.jumping){
+			this.runner.artist.cells = this.valkRunRightCells;
+		}
    },
    
    stopLeft: function () {
@@ -1127,19 +1133,45 @@ SnailBait.prototype = {
 };
 
 // Event handlers.......................................................
-window.checkKeyPress = function(e){
-	var key = e.keyCode;
-
-   if (key === 68 || key === 37) { // 'd' or left arrow
-     snailBait.turnLeft();
-	  snailBait.faceLeft = false;
-   }
-   else if (key === 75 || key === 39) { // 'k' or right arrow
-     snailBait.turnRight();
-	  snailBait.faceLeft = true;
-   }
+window.onkeydown = function(e){
+    if (e.keyCode in snailBait.keyMap) {
+        snailBait.keyMap[e.keyCode] = true;
+			//let's handle the key control stuff here, I guess.
+			//TODO: handle mutual exlusion, like hitting left makes previous right keys map to false
+			if ((snailBait.keyMap[68] || snailBait.keyMap[37]) 
+				&& !snailBait.runner.jumping){ // 'd' or left arrow
+				snailBait.turnLeft();
+				snailBait.faceLeft = false;
+			}
+			else if (snailBait.keyMap[75] || snailBait.keyMap[39] 
+				&& !snailBait.runner.jumping) { // 'k' or right arrow
+				snailBait.turnRight();
+				snailBait.faceLeft = true;
+			}
+			if (snailBait.keyMap[80]) { // 'p'
+				snailBait.togglePaused();
+			}
+			if (snailBait.keyMap[74]) { // 'j'
+				snailBait.runner.jump();
+			}
+			if (snailBait.keyMap[83]) { // 's'
+				snailBait.hammerSwing();
+			}
+    }
 };
 
+window.onkeyup = function(e) {
+    if (e.keyCode in snailBait.keyMap) {
+        snailBait.keyMap[e.keyCode] = false;
+			if (!(snailBait.keyMap[68] || snailBait.keyMap[37])) { // 'd' or left arrow
+				snailBait.stopLeft();
+			}
+			else if (!(snailBait.keyMap[75] || snailBait.keyMap[39])) { // 'k' or right arrow
+				snailBait.stopRight();
+			}
+    }
+};
+	/*
 window.onkeydown = function (e) {
    var key = e.keyCode;
 
@@ -1161,6 +1193,7 @@ window.onkeydown = function (e) {
       snailBait.hammerSwing();
    }
 };
+
 window.onkeyup = function (e) {
    var key = e.keyCode;
 
@@ -1174,7 +1207,7 @@ window.onkeyup = function (e) {
   // else if (key === 74) { // 'j'  //might have code to control jump height one day.
   //    snailBait.runner.jump();
   // }
-};
+};  */
 
 window.onblur = function (e) {  // pause if unpaused
    snailBait.windowHasFocus = false;
