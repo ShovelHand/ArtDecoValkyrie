@@ -244,8 +244,8 @@ this.valkRunRightCells = [
 	  
 	 ],
 	  this.valkSwingLeftCells = [
-     {left: 24, top: 740,
-	  width: 174, height: 248},
+   //  {left: 24, top: 740,
+	//  width: 174, height: 248},
 	  
 	  {left: 224, top: 740,
 	  width: 138, height: 248},
@@ -255,8 +255,8 @@ this.valkRunRightCells = [
 	  
 	 ],
 	  this.valkSwingRightCells = [
-     {left: 1193, top: 740,
-	  width: 174, height: 248},
+   //  {left: 1193, top: 740,
+	//  width: 174, height: 248},
 	  
 	  {left: 1030, top: 740,
 	  width: 135, height: 248},
@@ -686,7 +686,7 @@ SnailBait.prototype = {
           STARTING_RUNNER_TRACK = 1,
           STARTING_RUN_ANIMATION_RATE = 0;
 
-       this.runner = new Sprite('runner',
+      this.runner = new Sprite('runner',
                         new SpriteSheetArtist(this.spritesheet,
                                               this.valkIdleRightCells),
                         [ this.runBehavior,
@@ -738,7 +738,7 @@ SnailBait.prototype = {
 		 {
 			  if(this.runner.ascendTimer.isRunning())
 			  {
-				    this.runner.runAnimationRate = 0;
+				   this.runner.runAnimationRate = 0;
 					if(this.faceLeft)
 						this.runner.artist.cells = this.valkJumpLeftCells;
 					else
@@ -882,8 +882,12 @@ SnailBait.prototype = {
 
    turnLeft: function () {
      // this.bgVelocity = -this.BACKGROUND_VELOCITY;
-		if(this.runner.left > 100)
+		if(this.runner.left > 400 && ! this.runner.jumping){
 			this.runner.left -= 10;
+			if(this.bgVelocity > 0)
+				this.bgVelocity = 0;
+		}
+		
 		else
 			this.bgVelocity = -this.BACKGROUND_VELOCITY;
       this.runner.runAnimationRate = this.RUN_ANIMATION_RATE;
@@ -893,8 +897,12 @@ SnailBait.prototype = {
    },
 
    turnRight: function () {
-		if(this.runner.left < 1000 && ! this.runner.jumping)
+		if(this.runner.left < 1000 && ! this.runner.jumping){
 			this.runner.left += 10;
+			if(this.bgVelocity > 0){ //don't scroll backround in opposite direction of travel
+				this.bgVelocity = 0;
+			}
+		}
 		else
 			this.bgVelocity = this.BACKGROUND_VELOCITY;
       this.runner.runAnimationRate = this.RUN_ANIMATION_RATE;
@@ -1162,13 +1170,13 @@ window.onkeydown = function(e){
 
 window.onkeyup = function(e) {
     if (e.keyCode in snailBait.keyMap) {
-        snailBait.keyMap[e.keyCode] = false;
-			if (!(snailBait.keyMap[68] || snailBait.keyMap[37])) { // 'd' or left arrow
+			if ((snailBait.keyMap[68] || snailBait.keyMap[37])) { // 'd' or left arrow
 				snailBait.stopLeft();
 			}
-			else if (!(snailBait.keyMap[75] || snailBait.keyMap[39])) { // 'k' or right arrow
+			else if ((snailBait.keyMap[75] || snailBait.keyMap[39])) { // 'k' or right arrow
 				snailBait.stopRight();
 			}
+			snailBait.keyMap[e.keyCode] = false;
     }
 };
 	/*
